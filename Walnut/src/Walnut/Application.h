@@ -10,6 +10,10 @@
 #include "imgui.h"
 #include "vulkan/vulkan.h"
 
+#include <bits/stdc++.h>
+#include <chrono>
+#include <ctime>
+
 void check_vk_result(VkResult err);
 
 struct GLFWwindow;
@@ -43,9 +47,21 @@ namespace Walnut {
 
 		void PushLayer(const std::shared_ptr<Layer>& layer) { m_LayerStack.emplace_back(layer); layer->OnAttach(); }
 
+		// ADDED
+		template<typename T>
+		void PushLayer2()
+		{
+			static_assert(std::is_base_of<Layer, T>::value, "Pushed type is not subclass of Layer 2!");
+			m_LayerStack.emplace_back(std::make_shared<T>())->OnAttach2();
+		}
+
+		void PushLayer2(const std::shared_ptr<Layer>& layer) { m_LayerStack.emplace_back(layer); layer->OnAttach2(); }
+		//
+
 		void Close();
 
 		float GetTime();
+		
 		GLFWwindow* GetWindowHandle() const { return m_WindowHandle; }
 
 		static VkInstance GetInstance();
@@ -56,9 +72,11 @@ namespace Walnut {
 		static void FlushCommandBuffer(VkCommandBuffer commandBuffer);
 
 		static void SubmitResourceFree(std::function<void()>&& func);
+		void date_time();
 	private:
 		void Init();
 		void Shutdown();
+
 	private:
 		ApplicationSpecification m_Specification;
 		GLFWwindow* m_WindowHandle = nullptr;

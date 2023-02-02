@@ -1,5 +1,5 @@
 #include "Image.h"
-
+#include<iostream>
 #include "imgui.h"
 #include "backends/imgui_impl_vulkan.h"
 
@@ -52,7 +52,8 @@ namespace Walnut {
 	{
 		int width, height, channels;
 		uint8_t* data = nullptr;
-
+		
+		// std::cout << "To check the path: " << path << std::endl;
 		if (stbi_is_hdr(m_Filepath.c_str()))
 		{
 			data = (uint8_t*)stbi_loadf(m_Filepath.c_str(), &width, &height, &channels, 4);

@@ -454,14 +454,18 @@ namespace Walnut {
 
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();
-		//ImGui::StyleColorsClassic();
+		// ImGui::StyleColorsClassic();
 
 		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
 		ImGuiStyle& style = ImGui::GetStyle();
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
-			style.WindowRounding = 0.0f;
-			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+			style.WindowRounding = 15.0f;
+			style.Colors[ImGuiCol_WindowBg].x = 1.0f; // 0.0f;
+			style.Colors[ImGuiCol_WindowBg].y = 0.9f; // 0.75f;
+			style.Colors[ImGuiCol_WindowBg].z = 0.5f; // 1.0f;
+			style.Colors[ImGuiCol_WindowBg].w = 0.5f; // 0.55f;
+			//style.Colors[ImGuiCol_ChildBg].x = 3.0f;
 		}
 
 		// Setup Platform/Renderer backends
@@ -487,6 +491,8 @@ namespace Walnut {
 		fontConfig.FontDataOwnedByAtlas = false;
 		ImFont* robotoFont = io.Fonts->AddFontFromMemoryTTF((void*)g_RobotoRegular, sizeof(g_RobotoRegular), 20.0f, &fontConfig);
 		io.FontDefault = robotoFont;
+
+
 
 		// Upload Fonts
 		{
@@ -519,10 +525,20 @@ namespace Walnut {
 		}
 	}
 
+	void Application::date_time()
+	{
+		auto givemetime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+		return ImGui::TextColored(ImVec4(1, 1, 0, 1), ctime(&givemetime));
+	}
+
 	void Application::Shutdown()
 	{
 		for (auto& layer : m_LayerStack)
 			layer->OnDetach();
+
+		for (auto& layer : m_LayerStack)
+			layer->OnDetach2();
+
 
 		m_LayerStack.clear();
 
@@ -649,6 +665,10 @@ namespace Walnut {
 
 				for (auto& layer : m_LayerStack)
 					layer->OnUIRender();
+				
+				for (auto& layer : m_LayerStack)
+					layer->OnUIRender2();
+
 
 				ImGui::End();
 			}
